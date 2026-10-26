@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.ProyectoWeb.Entities.lugar;
+import com.example.ProyectoWeb.Exception.RecursoNoEncontradoException;
 import com.example.ProyectoWeb.Repository.lugarRepository;
 import com.example.ProyectoWeb.Services.lugarService;
 
@@ -24,7 +25,7 @@ public class lugarServiceImpl implements lugarService {
     @Override
     public lugar obtenerPorId(Long id) {
         return lugarRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Lugar no encontrado con id: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Lugar no encontrado con id: " + id));
     }
 
     @Override

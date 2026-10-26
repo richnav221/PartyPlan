@@ -1,29 +1,19 @@
 package com.example.ProyectoWeb.Controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Map;
 
-@Controller
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/auth")
 public class InicioController {
 
-    @GetMapping("/")
-    public String inicio(Model model, Authentication authentication) {
-
-        if (authentication != null) {
-            model.addAttribute("usuarioLogueado", authentication.getName());
-        }
-
-        return "index";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-    @GetMapping("/error")
-    public String error() {
-        return "error";
+    // El frontend llama a este endpoint con HTTP Basic para validar las credenciales
+    @GetMapping("/me")
+    public Map<String, String> usuarioActual(Authentication authentication) {
+        return Map.of("usuario", authentication.getName());
     }
 }

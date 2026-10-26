@@ -1,99 +1,61 @@
 package com.example.ProyectoWeb.Controller;
 
-import com.example.ProyectoWeb.Entities.pago;
-import com.example.ProyectoWeb.Services.pagoService;
-import com.example.ProyectoWeb.Services.reservaService;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/pagos")
+import com.example.ProyectoWeb.Entities.pago;
+import com.example.ProyectoWeb.Services.pagoService;
+
+@RestController
+@RequestMapping("/api/pagos")
 public class pagoController {
 
     @Autowired
     private pagoService service;
 
-    @Autowired
-    private reservaService reservaService;
-
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("pagos", service.obtenerTodos());
-        return "pagos";
+    public List<pago> listar() {
+        return service.obtenerTodos();
     }
 
     @GetMapping("/{id}")
-    public String obtenerPorId(
-            @PathVariable Long id,
-            Model model) {
-
-        model.addAttribute("pago", service.obtenerPorId(id));
-
-        return "pago";
+    public pago obtener(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
     @GetMapping("/reserva/{idReserva}")
-    public String obtenerPorReserva(
-            @PathVariable Long idReserva,
-            Model model) {
-
-        model.addAttribute(
-                "pago",
-                service.obtenerPorReserva(idReserva)
-        );
-
-        return "pago";
+    public pago obtenerPorReserva(@PathVariable Long idReserva) {
+        return service.obtenerPorReserva(idReserva);
     }
 
-    @GetMapping("/nuevo")
-    public String nuevo(Model model) {
-
-        model.addAttribute("pago", new pago());
-        model.addAttribute("reservas", reservaService.obtenerTodas());
-
-        return "pago-form";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public pago crear(@RequestBody pago pago) {
+        pago.setId(null);
+        return service.registrarPago(pago);
     }
 
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute pago pago) {
-
-        service.registrarPago(pago);
-
-        return "redirect:/pagos";
+    @PutMapping("/{id}")
+    public pago actualizar(@PathVariable Long id, @RequestBody pago pago) {
+        service.obtenerPorId(id);
+        pago.setId(id);
+        return service.registrarPago(pago);
     }
 
-    @GetMapping("/editar/{id}")
-    public String editar(
-            @PathVariable Long id,
-            Model model) {
-
-        model.addAttribute(
-                "pago",
-                service.obtenerPorId(id)
-        );
-
-        model.addAttribute(
-                "reservas",
-                reservaService.obtenerTodas()
-        );
-
-        return "pago-form";
-    }
-
-    @GetMapping("/estado/{id}/{estado}")
-    public String actualizarEstado(
-            @PathVariable Long id,
-            @PathVariable String estado) {
-
-        service.actualizarEstado(id, estado);
-
-        return "redirect:/pagos/" + id;
+    @PatchMapping("/{id}/estado")
+    public pago actualizarEstado(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        return service.actualizarEstado(id, body.get("estadoPago"));
     }
 }

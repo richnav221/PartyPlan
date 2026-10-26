@@ -1,0 +1,59 @@
+<div class="shell" [class.menu-abierto]="menuAbierto()">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/" (click)="menuAbierto.set(false)">
+      <span class="brand-mark"><app-icon name="moon" [size]="18" /></span>
+      <span class="brand-text">Party<b>Plan</b></span>
+    </a>
+
+    <nav class="nav">
+      <span class="nav-label">General</span>
+      @for (item of general; track item.ruta) {
+        <a
+          [routerLink]="item.ruta"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.ruta === '/' }"
+          (click)="menuAbierto.set(false)"
+        >
+          <app-icon [name]="item.icono" />
+          <span>{{ item.etiqueta }}</span>
+        </a>
+      }
+
+      <span class="nav-label">Gestión</span>
+      @for (item of gestion; track item.ruta) {
+        <a [routerLink]="item.ruta" routerLinkActive="active" (click)="menuAbierto.set(false)">
+          <app-icon [name]="item.icono" />
+          <span>{{ item.etiqueta }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <span class="avatar">{{ (auth.usuario() ?? '?').charAt(0).toUpperCase() }}</span>
+        <div class="user-info">
+          <strong>{{ auth.usuario() }}</strong>
+          <span>Administrador</span>
+        </div>
+      </div>
+      <button type="button" class="icon-btn" (click)="auth.logout()" title="Cerrar sesión" aria-label="Cerrar sesión">
+        <app-icon name="logout" />
+      </button>
+    </div>
+  </aside>
+
+  <div class="backdrop" (click)="menuAbierto.set(false)"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="icon-btn" (click)="menuAbierto.set(true)" aria-label="Abrir menú">
+        <app-icon name="menu" />
+      </button>
+      <span class="brand-text">Party<b>Plan</b></span>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

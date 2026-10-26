@@ -78,27 +78,27 @@ public class DatosIniciales {
 
                 plan1 = planRepository.save(
                         plan.builder()
-                                .tipo("Básico")
-                                .nombre("Plan Básico")
-                                .descripcion("Acceso a las instalaciones básicas.")
+                                .tipo("CULTURAL")
+                                .nombre("Ruta Candelaria")
+                                .descripcion("Recorrido guiado por La Candelaria, Museo del Oro y Museo Botero.")
                                 .precio(new BigDecimal("30000"))
                                 .build()
                 );
 
                 plan2 = planRepository.save(
                         plan.builder()
-                                .tipo("Premium")
-                                .nombre("Plan Premium")
-                                .descripcion("Acceso completo a todas las instalaciones.")
+                                .tipo("NOCTURNO")
+                                .nombre("Noche en la Zona T")
+                                .descripcion("Cena, coctelería de autor y discoteca en la Zona Rosa.")
                                 .precio(new BigDecimal("60000"))
                                 .build()
                 );
 
                 plan3 = planRepository.save(
                         plan.builder()
-                                .tipo("VIP")
-                                .nombre("Plan VIP")
-                                .descripcion("Acceso exclusivo y beneficios adicionales.")
+                                .tipo("MIXTO")
+                                .nombre("Bogotá de Día y de Noche")
+                                .descripcion("Monserrate al atardecer y cierre con salsa en Chapinero.")
                                 .precio(new BigDecimal("100000"))
                                 .build()
                 );
@@ -114,28 +114,28 @@ public class DatosIniciales {
 
                 lugarRepository.save(
                         lugar.builder()
-                                .nombre("Salón Principal")
-                                .categoria("Salón")
-                                .direccion("Calle 10 #20-30")
-                                .capacidad(100)
+                                .nombre("Museo del Oro")
+                                .categoria("Museo")
+                                .direccion("Cra. 6 #15-88")
+                                .capacidad(300)
                                 .build()
                 );
 
                 lugarRepository.save(
                         lugar.builder()
-                                .nombre("Sala de Conferencias")
-                                .categoria("Conferencia")
-                                .direccion("Calle 10 #20-35")
-                                .capacidad(50)
+                                .nombre("Andrés DC")
+                                .categoria("Restaurante-Bar")
+                                .direccion("Calle 82 #12-21")
+                                .capacidad(250)
                                 .build()
                 );
 
                 lugarRepository.save(
                         lugar.builder()
-                                .nombre("Terraza")
-                                .categoria("Exterior")
-                                .direccion("Calle 10 #20-40")
-                                .capacidad(80)
+                                .nombre("Theatron")
+                                .categoria("Discoteca")
+                                .direccion("Calle 58 #10-32")
+                                .capacidad(1200)
                                 .build()
                 );
             }
@@ -150,7 +150,7 @@ public class DatosIniciales {
                         reserva.builder()
                                 .usuario(usuario1)
                                 .plan(plan1)
-                                .fecha(LocalDate.of(2026, 10, 5))
+                                .fecha(LocalDate.now().plusDays(2))
                                 .hora(LocalTime.of(10, 0))
                                 .numeroPersonas(2)
                                 .estado("CONFIRMADA")
@@ -161,7 +161,7 @@ public class DatosIniciales {
                         reserva.builder()
                                 .usuario(usuario2)
                                 .plan(plan2)
-                                .fecha(LocalDate.of(2026, 10, 10))
+                                .fecha(LocalDate.now().plusDays(5))
                                 .hora(LocalTime.of(14, 30))
                                 .numeroPersonas(4)
                                 .estado("PENDIENTE")
@@ -172,7 +172,7 @@ public class DatosIniciales {
                         reserva.builder()
                                 .usuario(usuario3)
                                 .plan(plan3)
-                                .fecha(LocalDate.of(2026, 10, 15))
+                                .fecha(LocalDate.now().plusDays(9))
                                 .hora(LocalTime.of(18, 0))
                                 .numeroPersonas(6)
                                 .estado("CONFIRMADA")
@@ -193,7 +193,7 @@ public class DatosIniciales {
                                 .reserva(reserva1)
                                 .monto(new BigDecimal("30000"))
                                 .metodoPago("TARJETA")
-                                .fechaPago(LocalDate.of(2026, 9, 20))
+                                .fechaPago(LocalDate.now())
                                 .estadoPago("PAGADO")
                                 .build()
                 );
@@ -203,7 +203,7 @@ public class DatosIniciales {
                                 .reserva(reserva2)
                                 .monto(new BigDecimal("60000"))
                                 .metodoPago("TRANSFERENCIA")
-                                .fechaPago(LocalDate.of(2026, 9, 20))
+                                .fechaPago(LocalDate.now())
                                 .estadoPago("PENDIENTE")
                                 .build()
                 );
@@ -213,7 +213,7 @@ public class DatosIniciales {
                                 .reserva(reserva3)
                                 .monto(new BigDecimal("100000"))
                                 .metodoPago("EFECTIVO")
-                                .fechaPago(LocalDate.of(2026, 9, 20))
+                                .fechaPago(LocalDate.now())
                                 .estadoPago("PAGADO")
                                 .build()
                 );

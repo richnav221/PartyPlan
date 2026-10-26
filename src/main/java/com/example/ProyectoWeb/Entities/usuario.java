@@ -33,5 +33,6 @@ public class usuario {
 
     private String telefono;
 
+    @Builder.Default
     private boolean activo = true;
 }

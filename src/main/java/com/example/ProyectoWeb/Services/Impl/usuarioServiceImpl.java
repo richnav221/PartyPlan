@@ -32,11 +32,16 @@ public class usuarioServiceImpl implements usuarioService {
     @Override
     public usuario obtenerPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new CorreoDuplicadoException(correo));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con correo: " + correo));
     }
 
     @Override
     public usuario guardar(usuario usuario) {
+        usuarioRepository.findByCorreo(usuario.getCorreo())
+                .filter(existente -> !existente.getId().equals(usuario.getId()))
+                .ifPresent(existente -> {
+                    throw new CorreoDuplicadoException(usuario.getCorreo());
+                });
         return usuarioRepository.save(usuario);
     }
 

@@ -1,52 +1,56 @@
 package com.example.ProyectoWeb.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ProyectoWeb.Entities.plan;
 import com.example.ProyectoWeb.Services.planService;
 
-@Controller
-@RequestMapping("/planes")
+@RestController
+@RequestMapping("/api/planes")
 public class planController {
 
     @Autowired
     private planService service;
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("planes", service.obtenerTodos());
-        return "planes";
+    public List<plan> listar() {
+        return service.obtenerTodos();
     }
 
-    @GetMapping("/nuevo")
-    public String nuevo(Model model) {
-        model.addAttribute("plan", new plan());
-        return "plan-form";
+    @GetMapping("/{id}")
+    public plan obtener(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute plan plan) {
-        service.guardar(plan);
-        return "redirect:/planes";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public plan crear(@RequestBody plan plan) {
+        plan.setId(null);
+        return service.guardar(plan);
     }
 
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("plan", service.obtenerPorId(id));
-        return "plan-form";
+    @PutMapping("/{id}")
+    public plan actualizar(@PathVariable Long id, @RequestBody plan plan) {
+        service.obtenerPorId(id);
+        plan.setId(id);
+        return service.guardar(plan);
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
-        return "redirect:/planes";
     }
-
 }

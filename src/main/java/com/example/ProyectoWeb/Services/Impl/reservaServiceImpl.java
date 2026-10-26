@@ -2,6 +2,7 @@ package com.example.ProyectoWeb.Services.Impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class reservaServiceImpl implements reservaService {
+
+    private static final Set<String> ESTADOS_VALIDOS = Set.of("PENDIENTE", "CONFIRMADA", "CANCELADA");
 
     private final reservaRepository reservaRepository;
 
@@ -49,19 +52,32 @@ public class reservaServiceImpl implements reservaService {
 
     @Override
     public reserva crear(reserva reserva) {
+        // Toda reserva nueva inicia como PENDIENTE si no se indica otro estado
         if (reserva.getEstado() == null || reserva.getEstado().isBlank()) {
-            throw new EstadoInvalidoException("El estado de la reserva no puede estar vacío.");
-        }
             reserva.setEstado("PENDIENTE");
-        
+        }
+        validarEstado(reserva.getEstado());
+        return reservaRepository.save(reserva);
+    }
+
+    @Override
+    public reserva actualizar(reserva reserva) {
+        validarEstado(reserva.getEstado());
         return reservaRepository.save(reserva);
     }
 
     @Override
     public reserva cambiarEstado(Long id, String nuevoEstado) {
+        validarEstado(nuevoEstado);
         reserva reserva = obtenerPorId(id);
         reserva.setEstado(nuevoEstado);
         return reservaRepository.save(reserva);
+    }
+
+    private void validarEstado(String estado) {
+        if (estado == null || !ESTADOS_VALIDOS.contains(estado)) {
+            throw new EstadoInvalidoException(estado);
+        }
     }
 
     @Override

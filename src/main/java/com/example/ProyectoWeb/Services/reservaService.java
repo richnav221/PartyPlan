@@ -21,6 +21,8 @@ public interface reservaService {
 
     reserva crear(reserva reserva);
 
+    reserva actualizar(reserva reserva);
+
     reserva cambiarEstado(Long id, String nuevoEstado);
 
     void eliminar(Long id);

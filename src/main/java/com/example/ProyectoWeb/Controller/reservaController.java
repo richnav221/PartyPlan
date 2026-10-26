@@ -1,75 +1,63 @@
 package com.example.ProyectoWeb.Controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ProyectoWeb.Entities.reserva;
-import com.example.ProyectoWeb.Services.planService;
 import com.example.ProyectoWeb.Services.reservaService;
-import com.example.ProyectoWeb.Services.usuarioService;
 
-@Controller
-@RequestMapping("/reservas")
+@RestController
+@RequestMapping("/api/reservas")
 public class reservaController {
 
     @Autowired
     private reservaService service;
 
-    @Autowired
-    private usuarioService usuarioService;
-
-    @Autowired
-    private planService planService;
-
     @GetMapping
-    public String listar(Model model) {
-
-        model.addAttribute("reservas", service.obtenerTodas());
-
-        return "reservas";
+    public List<reserva> listar() {
+        return service.obtenerTodas();
     }
 
-    @GetMapping("/nuevo")
-    public String nuevo(Model model) {
-
-        model.addAttribute("reserva", new reserva());
-        model.addAttribute("usuarios", usuarioService.obtenerTodos());
-        model.addAttribute("planes", planService.obtenerTodos());
-
-        return "reserva-form";
+    @GetMapping("/{id}")
+    public reserva obtener(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute reserva reserva) {
-
-        service.crear(reserva);
-
-        return "redirect:/reservas";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public reserva crear(@RequestBody reserva reserva) {
+        reserva.setId(null);
+        return service.crear(reserva);
     }
 
-    @GetMapping("/editar/{id}")
-    public String editar(
-            @PathVariable Long id,
-            Model model) {
-
-        model.addAttribute("reserva", service.obtenerPorId(id));
-        model.addAttribute("usuarios", usuarioService.obtenerTodos());
-        model.addAttribute("planes", planService.obtenerTodos());
-
-        return "reserva-form";
+    @PutMapping("/{id}")
+    public reserva actualizar(@PathVariable Long id, @RequestBody reserva reserva) {
+        service.obtenerPorId(id);
+        reserva.setId(id);
+        return service.actualizar(reserva);
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Long id) {
+    @PatchMapping("/{id}/estado")
+    public reserva cambiarEstado(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        return service.cambiarEstado(id, body.get("estado"));
+    }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
-
-        return "redirect:/reservas";
     }
 }
